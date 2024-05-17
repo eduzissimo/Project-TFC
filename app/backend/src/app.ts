@@ -2,12 +2,14 @@ import * as express from 'express';
 import 'express-async-errors';
 
 import errorMiddleware from './middlewares/errorMiddleware';
+import teamsRouter from './database/routes/teams.routes';
 
 class App {
   public app: express.Express;
 
   constructor() {
     this.app = express();
+    this.app.use('/teams', teamsRouter);
 
     this.config();
 
