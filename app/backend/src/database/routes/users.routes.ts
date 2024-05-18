@@ -6,7 +6,7 @@ const usersController = new UsersController();
 
 const router = Router();
 
-router.post('/login', (req, res) => usersController.login(req, res));
+router.post('/', (req, res) => usersController.login(req, res));
 router.get('/role', AuthMiddleware.tokenHandler, (req, res) => usersController.getRole(req, res));
 
 export default router;
