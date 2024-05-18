@@ -1,16 +1,21 @@
-import { ModelStatic } from 'sequelize';
-import ITeamsService from '../../Interfaces/ITeamsService';
-import SequelizeTeams from '../models/SequelizeTeams';
+import ITeamsModel from '../../Interfaces/ITeamsModel';
+import { ServiceResponse } from '../../Interfaces/ServiceResponse';
+import { ITeam } from '../../Interfaces/ITeam';
+import TeamModel from '../models/TeamModel';
+import mapStatusHTTP from '../utils/mapStatusHTTP';
 
-export default class TeamsService implements ITeamsService {
-  protected teamsModel: ModelStatic<SequelizeTeams> = SequelizeTeams;
+const { OK } = mapStatusHTTP;
 
-  async getAllTeams(): Promise<SequelizeTeams[]> {
-    return this.teamsModel.findAll();
+export default class TeamsService {
+  constructor(private teamsModel: ITeamsModel = new TeamModel()) {}
+
+  async getAllTeams(): Promise<ServiceResponse<ITeam[]>> {
+    const teams = await this.teamsModel.getAllTeams();
+    return { status: OK, data: teams };
   }
 
-  async getTeamsById(id: number): Promise<SequelizeTeams> {
-    const team = await this.teamsModel.findByPk(id);
-    return team as SequelizeTeams;
+  async getTeamsById(id: number): Promise<ServiceResponse<ITeam | null>> {
+    const team = await this.teamsModel.getTeamsById(id);
+    return { status: OK, data: team };
   }
 }

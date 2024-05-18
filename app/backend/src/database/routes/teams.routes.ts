@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import TeamsController from '../controllers/teams.controller';
-import TeamsService from '../services/teams.service';
 
-const teamsRouter = Router();
-const serviceTeams = new TeamsService();
-const teamsController = new TeamsController(serviceTeams);
+const teamsController = new TeamsController();
 
-teamsRouter.get('/', (req, res) => teamsController.getAllTeams(req, res));
-teamsRouter.get('/:id', (req, res) => teamsController.getTeamsById(req, res));
+const router = Router();
 
-export default teamsRouter;
+router.get('/', (req, res) => teamsController.getAllTeams(req, res));
+router.get('/:id', (req, res) => teamsController.getTeamsById(req, res));
+
+export default router;

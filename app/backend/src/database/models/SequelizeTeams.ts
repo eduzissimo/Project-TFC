@@ -7,13 +7,13 @@ import {
 } from 'sequelize';
 import db from '.';
 
-class SequelizeTeams extends Model<InferAttributes<SequelizeTeams>,
-InferCreationAttributes<SequelizeTeams>> {
+class Teams extends Model<InferAttributes<Teams>,
+InferCreationAttributes<Teams>> {
   declare id: CreationOptional<number>;
   declare teamName: string;
 }
 
-SequelizeTeams.init({
+Teams.init({
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -23,12 +23,13 @@ SequelizeTeams.init({
   teamName: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'team_name',
   },
 }, {
   sequelize: db,
   modelName: 'teams',
+  tableName: 'teams',
+  underscored: true,
   timestamps: false,
 });
 
-export default SequelizeTeams;
+export default Teams;
