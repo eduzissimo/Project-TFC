@@ -17,14 +17,6 @@ const { expect } = chai;
 describe('Teste da requisição Teams', () => {
   let chaiHttpResponse: Response;
 
-  before(async () => {
-    sinon
-      .stub(SequelizeTeams, "findOne")
-      .resolves({
-        ...teamsMock
-      } as any);
-  });
-
   it('Deve retornar status 200 quando a rota for "/" ', async () => {
     chaiHttpResponse = await chai.request(app).get('/');
     expect(chaiHttpResponse).to.have.status(200);
