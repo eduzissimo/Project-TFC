@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import MatchesService from '../services/matches.service';
+import handleResponse from '../utils/responseHandler';
 
 export default class MatchesController {
   constructor(private matchesService: MatchesService = new MatchesService()) {}
@@ -9,13 +10,13 @@ export default class MatchesController {
     const matches = await this.matchesService.getAllMatches(
       inProgress as 'true' | 'false' | undefined,
     );
-    res.status(matches.status).json(matches.data);
+    handleResponse(res, matches);
   }
 
   async finishedMatches(req: Request, res: Response) {
     const { id } = req.params;
     const match = await this.matchesService.finishedMatches(Number(id));
-    res.status(match.status).json(match.data);
+    handleResponse(res, match);
   }
 
   async updateGoals(req: Request, res: Response) {
@@ -26,7 +27,7 @@ export default class MatchesController {
       homeTeamGoals,
       awayTeamGoals,
     );
-    res.status(match.status).json(match.data);
+    handleResponse(res, match);
   }
 
   async createMatches(req: Request, res: Response) {
@@ -37,6 +38,6 @@ export default class MatchesController {
       awayTeamId,
       awayTeamGoals,
     );
-    res.status(match.status).json(match.data);
+    handleResponse(res, match);
   }
 }

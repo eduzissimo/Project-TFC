@@ -12,7 +12,7 @@ type ErrorResponse = { message: string };
 type RoleResponse = { role: string };
 
 export default class UsersService {
-  private static readonly invalidCredentials = {
+  private static readonly invalidCredentialsRes = {
     status: UNAUTHORIZED,
     data: { message: 'Invalid email or password' },
   };
@@ -24,10 +24,10 @@ export default class UsersService {
     password: string,
   ): Promise<ServiceResponse<LoginResponse | ErrorResponse>> {
     const userEmail = await this.usersModel.getAllUsers(email);
-    if (!userEmail) return UsersService.invalidCredentials;
+    if (!userEmail) return UsersService.invalidCredentialsRes;
 
     const checkPassword = await compare(password, userEmail.password);
-    if (!checkPassword) return UsersService.invalidCredentials;
+    if (!checkPassword) return UsersService.invalidCredentialsRes;
 
     const payload = { email: userEmail.email };
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '1h' });
@@ -36,8 +36,8 @@ export default class UsersService {
 
   async getRole(email: string): Promise<ServiceResponse<RoleResponse | ErrorResponse>> {
     const user = await this.usersModel.getAllUsers(email);
-    if (!user) return UsersService.invalidCredentials;
-    const { role } = user;
-    return { status: OK, data: { role } };
+    if (!user) return UsersService.invalidCredentialsRes;
+
+    return { status: OK, data: { role: user.role } };
   }
 }

@@ -4,7 +4,6 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import SequelizeUser from '../database/models/SequelizeUsers';
 
 import { Response } from 'superagent';
 

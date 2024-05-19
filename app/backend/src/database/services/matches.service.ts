@@ -4,21 +4,18 @@ import { ServiceResponse } from '../../Interfaces/ServiceResponse';
 import { IMatchModel } from '../../Interfaces/IMatchModel';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
 
-const { OK } = mapStatusHTTP;
-const { UNPROCESSABLE_ENTITY } = mapStatusHTTP;
-const { CREATED } = mapStatusHTTP;
-const { NOT_FOUND } = mapStatusHTTP;
+const { OK, UNPROCESSABLE_ENTITY, CREATED, NOT_FOUND } = mapStatusHTTP;
 
 type StatusProgress = 'true' | 'false' | undefined;
 type ErrorMessage = { message: string };
 
 export default class MatchesService {
-  private static readonly invalidTeam = {
+  private static readonly invalidTeamRes = {
     status: NOT_FOUND,
     data: { message: 'There is no team with such id!' },
   };
 
-  private static readonly invalidMatch = {
+  private static readonly invalidMatchRes = {
     status: UNPROCESSABLE_ENTITY,
     data: { message: 'It is not possible to create a match with two equal teams' },
   };
@@ -27,19 +24,16 @@ export default class MatchesService {
 
   async getAllMatches(statusProgress: StatusProgress): Promise<ServiceResponse<IMatches[]>> {
     const matchesData = await this.matchesModel.getAllMatches();
-    if (statusProgress) {
-      const matchesFiltered = matchesData.filter(
-        (match) => match.inProgress.toString() === statusProgress,
-      );
-      return { status: OK, data: matchesFiltered };
-    }
-    return { status: OK, data: matchesData };
+    const filteredMatches = statusProgress
+      ? matchesData.filter((match) => match.inProgress.toString() === statusProgress)
+      : matchesData;
+    return { status: OK, data: filteredMatches };
   }
 
   async finishedMatches(matchId: number): Promise<ServiceResponse<number[]>> {
     const match = await this.matchesModel.finishedMatches(matchId);
-    if (match[0] === 0) return { status: NOT_FOUND, data: match };
-    return { status: OK, data: match };
+    const status = match[0] === 0 ? NOT_FOUND : OK;
+    return { status, data: match };
   }
 
   async updateGoals(
@@ -48,8 +42,8 @@ export default class MatchesService {
     awayTeamGoals: number,
   ): Promise<ServiceResponse<number[]>> {
     const match = await this.matchesModel.updateGoals(matchId, homeTeamGoals, awayTeamGoals);
-    if (match[0] === 0) return { status: NOT_FOUND, data: match };
-    return { status: OK, data: match };
+    const status = match[0] === 0 ? NOT_FOUND : OK;
+    return { status, data: match };
   }
 
   async createMatches(
@@ -58,11 +52,13 @@ export default class MatchesService {
     awayTeamId: number,
     awayTeamGoals: number,
   ): Promise<ServiceResponse<IMatches | ErrorMessage>> {
-    if (homeTeamId === awayTeamId) return MatchesService.invalidMatch;
+    if (homeTeamId === awayTeamId) return MatchesService.invalidMatchRes;
+
     const teams = await this.matchesModel.getAllMatches();
     const homeTeam = teams.find((team) => team.id === homeTeamId);
     const awayTeam = teams.find((team) => team.id === awayTeamId);
-    if (!homeTeam || !awayTeam) return MatchesService.invalidTeam;
+
+    if (!homeTeam || !awayTeam) return MatchesService.invalidTeamRes;
 
     const match = await this.matchesModel.createMatches(
       homeTeamId,
