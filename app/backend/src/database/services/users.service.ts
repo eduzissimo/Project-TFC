@@ -4,19 +4,12 @@ import UserModel from '../models/UsersModel';
 import { IUsersModel } from '../../Interfaces/IUsersModel';
 import { ServiceResponse } from '../../Interfaces/ServiceResponse';
 import mapStatusHTTP from '../utils/mapStatusHTTP';
+import { invalidCredentialsRes } from '../utils/constant';
+import { ErrorResponse, LoginResponse, RoleResponse } from '../types/users.type';
 
-const { OK, UNAUTHORIZED } = mapStatusHTTP;
-
-type LoginResponse = { token: string };
-type ErrorResponse = { message: string };
-type RoleResponse = { role: string };
+const { OK } = mapStatusHTTP;
 
 export default class UsersService {
-  private static readonly invalidCredentialsRes = {
-    status: UNAUTHORIZED,
-    data: { message: 'Invalid email or password' },
-  };
-
   constructor(private usersModel: IUsersModel = new UserModel()) {}
 
   async login(
@@ -24,10 +17,10 @@ export default class UsersService {
     password: string,
   ): Promise<ServiceResponse<LoginResponse | ErrorResponse>> {
     const userEmail = await this.usersModel.getAllUsers(email);
-    if (!userEmail) return UsersService.invalidCredentialsRes;
+    if (!userEmail) return invalidCredentialsRes;
 
     const checkPassword = await compare(password, userEmail.password);
-    if (!checkPassword) return UsersService.invalidCredentialsRes;
+    if (!checkPassword) return invalidCredentialsRes;
 
     const payload = { email: userEmail.email };
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '1h' });
@@ -36,7 +29,7 @@ export default class UsersService {
 
   async getRole(email: string): Promise<ServiceResponse<RoleResponse | ErrorResponse>> {
     const user = await this.usersModel.getAllUsers(email);
-    if (!user) return UsersService.invalidCredentialsRes;
+    if (!user) return invalidCredentialsRes;
 
     return { status: OK, data: { role: user.role } };
   }
