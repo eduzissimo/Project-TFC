@@ -22,7 +22,7 @@ export default class UsersController {
     res.status(userLogin.status).json(userLogin.data);
   }
 
-  async getRole(req: Request, res: Response) {
+  async getRole(_req: Request, res: Response) {
     const { email } = res.locals.user;
     const userRole = await this.usersService.getRole(email);
     res.status(userRole.status).json(userRole.data);

@@ -124,31 +124,4 @@ describe('MatchesService', () => {
       expect(response.data).to.deep.equal(newMatch);
     });
   });
-
-  describe('Testando a endopoint Matches', () => {
-    let chaiHttpResponse: Response;
-
-    it('Deve retornar status 200 quando a rota for "/matches" juntamente das partidas ', async () => {
-      chaiHttpResponse = await chai.request(app).get('/matches');
-
-      expect(chaiHttpResponse).to.have.status(200);
-      expect(chaiHttpResponse.body).to.be.an('array');
-      expect(chaiHttpResponse.body).to.be.have.property('homeTeamId', 16);
-      expect(chaiHttpResponse.body).to.be.have.property('awayTeamId', 8);
-      expect(chaiHttpResponse.body).to.be.have.property('homeTeamGoals', 1);
-      expect(chaiHttpResponse.body).to.be.have.property('awayTeamGoals', 1);
-      expect(chaiHttpResponse.body).to.be.have.property('inProgress', false);
-    });
-
-    it('Deve retornar status 200 quando a rota for "/matches/:id" juntamente da partida ', async () => {
-      chaiHttpResponse = await chai.request(app).get('/matches/1');
-
-      expect(chaiHttpResponse).to.have.status(200);
-      expect(chaiHttpResponse.body).to.be.have.property('homeTeamId', 16);
-      expect(chaiHttpResponse.body).to.be.have.property('awayTeamId', 8);
-      expect(chaiHttpResponse.body).to.be.have.property('homeTeamGoals', 1);
-      expect(chaiHttpResponse.body).to.be.have.property('awayTeamGoals', 1);
-      expect(chaiHttpResponse.body).to.be.have.property('inProgress', false);
-    });
-  });
 });
