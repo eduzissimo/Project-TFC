@@ -23,16 +23,15 @@ O projeto é composto de 4 entidades importantes para sua estrutura:
   - Também pode conectar a um Cliente MySQL (Workbench, Beekeeper, DBeaver e etc), colocando as credenciais configuradas no docker-compose no serviço `db`.
 
 2️⃣ **Back-end:**
- - Será o ambiente que você realizará a maior parte das implementações exigidas.
+ - Será o ambiente que realizará a maior parte das implementações exigidas.
  - Deve rodar na porta `3001`, pois o front-end faz requisições para ele nessa porta por padrão;
  - A aplicação deve ser inicializada a partir do arquivo `app/backend/src/server.ts`;
- - Garanta que o `express` é executado e a aplicação ouve a porta que vem das variáveis de ambiente;
+ - O `express` é executado e a aplicação ouve a porta que vem das variáveis de ambiente;
 
 
 3️⃣ **Front-end:**
   - O front já está concluído, não é necessário realizar modificações no mesmo. A única exceção será seu Dockerfile que precisará ser configurado.
-  - Todos os testes a partir do requisito de login usam o `puppeteer` para simular uma pessoa acessando o site `http://localhost:3000/`;
-  - O front se comunica com serviço de back-end pela url `http://localhost:3001` através dos endpoints que você deve construir nos requisitos.
+  - O front se comunica com serviço de back-end pela url `http://localhost:3001` através dos endpoints que fora construido.
 
 4️⃣ **Docker:**
   - O `docker-compose` tem a responsabilidade de unir todos os serviços conteinerizados (backend, frontend e db) e subir o projeto completo com o comando `npm run compose:up`;
